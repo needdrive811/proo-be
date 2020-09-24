@@ -1,0 +1,19 @@
+FROM continuumio/miniconda3
+
+RUN conda install scikit-learn
+
+# Grab requirements.txt.
+ADD ./requirements2.txt /tmp/requirements2.txt
+
+# Install dependencies
+RUN pip install -qr /tmp/requirements2.txt
+
+ARG CACHE_DATE=not_a_date
+
+# Add our code
+ADD ./exrec /opt/exrec/
+WORKDIR /opt/exrec
+
+CMD waitress-serve --listen=*:$PORT wsgi:application
+
+#CMD waitress-serve --listen=*:5000 wsgi:application
